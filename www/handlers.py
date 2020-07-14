@@ -1,5 +1,7 @@
 from coroweb import get,options,post
 from getHtml.ziRoom import getZiRoomHtml 
+from getHtml.ziRoom import getZiRoomHtmlSelenium 
+
 @get('/blog/{id}')
 def get_blog(id):
     return id
@@ -7,7 +9,9 @@ def get_blog(id):
 @get('/roomList/{name}')
 def get_rooms(name):
     key='阳光100'
-    result = getZiRoomHtml(key)
+    result = []
+    # getZiRoomHtml(key)
+    result = getZiRoomHtmlSelenium(key)
     return {'data':result}
 @options('/logIn')
 def get_access():
