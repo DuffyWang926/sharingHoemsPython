@@ -60,6 +60,9 @@ async def response_factory(app, handler):
         resp.headers['Access-Control-Allow-Origin'] = "*"
         resp.headers['Access-Control-Allow-Headers'] = "Origin, X-Requested-With, Content-Type, Accept"
         resp.headers['Access-Control-Allow-Methods'] = "PUT,POST,GET,DELETE,OPTIONS"
+        # resp.headers['Access-Control-Max-Age'] = '1000'
+        # resp.headers['Access-Control-Allow-Headers'] = '*'
+        print(resp,'response')
 
         return resp
        

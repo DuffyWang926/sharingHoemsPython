@@ -20,3 +20,7 @@ def get_access():
 @post('/logIn')
 def get_accessd():
     return'ss'   
+
+@options('/roomList/ss')
+def get_accessdd():
+    return'ss' 
