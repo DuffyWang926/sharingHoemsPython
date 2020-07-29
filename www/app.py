@@ -17,8 +17,6 @@ async def response_factory(app, handler):
         logging.info('Response handler...')
         global resp
         r = await handler(request)
-        print(r,'Response r...')
-       
         if isinstance(r, web.StreamResponse):
             return r
         if isinstance(r, bytes):
@@ -26,7 +24,6 @@ async def response_factory(app, handler):
             resp.content_type = 'application/octet-stream'
             
         if isinstance(r, str):
-            print(r,'Response str...')
             if r.startswith('redirect:'):
                 return web.HTTPFound(r[9:])
             resp = web.Response(body=r.encode('utf-8'))
@@ -62,8 +59,6 @@ async def response_factory(app, handler):
         resp.headers['Access-Control-Allow-Methods'] = "PUT,POST,GET,DELETE,OPTIONS"
         # resp.headers['Access-Control-Max-Age'] = '1000'
         # resp.headers['Access-Control-Allow-Headers'] = '*'
-        print(resp,'response')
-
         return resp
        
     return response
@@ -75,10 +70,6 @@ async def handle(request):
     r.headers['Access-Control-Allow-Origin'] = "*"
     r.headers['Access-Control-Allow-Headers'] = "Origin, X-Requested-With, Content-Type, Accept"
 
-    print(r,'r')
-    print(r,'resp')
-    print(type(r),'resp type')
-    print(dir(r),'resp dir')
     return r
 
 app = web.Application(middlewares=[

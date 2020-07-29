@@ -92,10 +92,9 @@ def getZiRoomHtmlSelenium(key):
            'source': 'Object.defineProperty(navigator, "webdriver", {get: () => undefined})'
         })
 
-        # resultEgg = getEggShellData(browser, '朱辛庄', True)
-        # resultZiRoom = getZiRoomData(browser, '朱辛庄', True)
+        resultEgg = getEggShellData(browser, '朱辛庄', True)
+        resultZiRoom = getZiRoomData(browser, '朱辛庄', True)
         resultMyHome = getMyHomeData(browser, '朱辛庄', True)
-        print(resultMyHome,'resultMyHome333333')
         
 
         # browser.get('http://www.ziroom.com')
@@ -104,9 +103,6 @@ def getZiRoomHtmlSelenium(key):
         # input.send_keys(Keys.ENTER)
         # wait = WebDriverWait(browser, 10)
         # wait.until(EC.presence_of_element_located((By.CLASS_NAME, 'Z_list')))
-        print(browser.current_url,'browser.current_url')
-        # print(browser.get_cookies(),'browser.get_cookies()')
-        # print(browser.page_source,'browser.page_source')
     finally:
         browser.close()
     
@@ -145,14 +141,11 @@ def getEggShellData(browser,key,*isAll):
 
 
 
-    print(result,'result1111111111')
-
     return result
 
 def getEggListData(browser):
     roomListBox = browser.find_element_by_class_name('r_ls_box')
     roomList = roomListBox.find_elements_by_class_name('r_lbx')
-    # print(roomList,'roomList111111111')
     result = []
     for i in roomList:
         img = i.find_element_by_tag_name('img')
@@ -164,8 +157,6 @@ def getEggListData(browser):
         
         detailContent = i.find_element_by_class_name('r_lbx_cenb').text
          
-        # print(detailContent,'detailContent11111111')
-
         detailConList = detailContent.split('|')
         area = 0
         floor = 0
@@ -216,7 +207,6 @@ def getZiRoomData(browser, key, isAll):
         nextPageDiv = browser.find_element_by_class_name('Z_pages')
         nextNodeList = nextPageDiv.find_elements_by_tag_name('a')
         if len(nextNodeList) > 2:
-            print('next')
             for k in range(len(nextNodeList) -2):
                 wait = WebDriverWait(browser, 10)
                 wait.until(EC.presence_of_element_located((By.CLASS_NAME, 'Z_list')))
@@ -227,8 +217,6 @@ def getZiRoomData(browser, key, isAll):
                         result.extend(resultTemp)
                         nextNode.click()
 
-    print(result,'resultZi22222222222')
-    
     return result
 
 def getZiRoomListData(browser):
@@ -238,8 +226,6 @@ def getZiRoomListData(browser):
     
     for i in items:
         divList = i.find_elements_by_tag_name('span')
-        print(len(divList),'i.text**********')
-        # print(i.text,'i.text**********')
 
         if len(divList) > 5:
             detail = i.find_element_by_class_name('pic-wrap')
@@ -315,7 +301,6 @@ def getMyHomeData(browser, key, isAll):
     #     nextPageDiv = browser.find_element_by_class_name('Z_pages')
     #     nextNodeList = nextPageDiv.find_elements_by_tag_name('a')
     #     if len(nextNodeList) > 2:
-    #         print('next')
     #         for k in range(len(nextNodeList) -2):
     #             wait = WebDriverWait(browser, 10)
     #             wait.until(EC.presence_of_element_located((By.CLASS_NAME, 'Z_list')))
@@ -325,20 +310,14 @@ def getMyHomeData(browser, key, isAll):
     #                     resultTemp = getZiRoomListData(browser)
     #                     result.extend(resultTemp)
     #                     nextNode.click()
-
-    print(result,'resultZi22222222222')
-    
     return result
 
 def getMyHomeListData(browser):
     result = []
     roomlist = browser.find_element_by_class_name('pList')
     items = roomlist.find_elements_by_tag_name('li')
-    print(items,'items11111')
-
     for i in items:
         imgDiv = i.find_element_by_class_name('listImg')
-        print(imgDiv,'imgDiv11111')
         detail = imgDiv.find_element_by_tag_name('a')
         detailUrl = detail.get_attribute('href')
         if detailUrl.find('http') == -1:
@@ -346,6 +325,9 @@ def getMyHomeListData(browser):
 
         img = imgDiv.find_element_by_css_selector('a>img')
         imgSrc = img.get_attribute('src')
+        if imgSrc.find('data') != -1:
+            imgSrc = img.get_attribute('data-src')
+
         if imgSrc.find('http') == -1:
             imgSrc.replace('//','http://')
         contentDiv = i.find_element_by_class_name('listCon')
@@ -358,13 +340,14 @@ def getMyHomeListData(browser):
         floorTotal = ''
         distance = ''
         if len(pList) > 1:
-            textList = pList[0].text.split('.')
+            textList = pList[0].text.split('·')
+            print(textList,'textList')
             if len(textList) > 3:
-                area = textList[1].strip()[::2]
+                area = textList[1].strip()[:2]
                 floorData = textList[3].strip().split('/')
                 if len(floorData) > 1:
                     floor = floorData[0]
-                    floorTotal = floorData[1]
+                    floorTotal = floorData[1][:-1]
             distanceNodeList = pList[1].find_elements_by_tag_name('a')
             if len(distanceNodeList) > 1:
                 distance = distanceNodeList[1].text
@@ -382,5 +365,4 @@ def getMyHomeListData(browser):
             
             }
         result.append(res)
-    print(result,'getMyHomeListData result11111')
     return result
