@@ -98,11 +98,11 @@ def getZiRoomHtmlSelenium(key):
            'source': 'Object.defineProperty(navigator, "webdriver", {get: () => undefined})'
         })
 
-        # resultEgg =  getEggShellData(browser, '朱辛庄', True)
-        # resultZiRoom =  getZiRoomData(browser, '朱辛庄', True)
-        # resultMyHome =  getMyHomeData(browser, '朱辛庄', True)
-        # resultMyHome =  getMyHomeData(browser, '朱辛庄', True)
-        resultMushroom =  getMushroomData(browser, '朱辛庄', True)
+        # resultEgg =  getEggShellData(browser, key, True)
+        # resultZiRoom =  getZiRoomData(browser, key, True)
+        # resultMyHome =  getMyHomeData(browser, key, True)
+        # resultMyHome =  getMyHomeData(browser, key, True)
+        resultMushroom =  getMushroomData(browser, key, True)
         
 
         # browser.get('http://www.ziroom.com')

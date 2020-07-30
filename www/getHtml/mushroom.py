@@ -34,7 +34,6 @@ def getMushroomData(browser,key,*isAll):
         if len(nextNodeList) > 1:
             k = 1
             for k in range(len(nextNodeList) -1):
-                # nextNode = nextPageDiv.find_element_by_xpath('//a[text()="下一页"]')
                 nextPageDiv = browser.find_element_by_class_name('page-box')
                 nextNodeList = nextPageDiv.find_elements_by_css_selector('p>a')
                 nextNode = nextNodeList[k+1]

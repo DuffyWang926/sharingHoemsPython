@@ -7,16 +7,14 @@ import time
 def get_blog(id):
     return id
 
-@get('/roomList/{name}')
-def get_rooms(name):
-    key='阳光100'
+@get('/roomList')
+def get_rooms(*args,**kw):
+    print(args,'args')
+    print(kw,'kw')
+    key = kw['key']
     result = []
     # getZiRoomHtml(key)
-    startTime = time.time()
     result = getZiRoomHtmlSelenium(key)
-    endTime = time.time()
-    durTime = endTime - startTime
-    print(durTime,'durTime')
     return {'data':result}
 @options('/logIn')
 def get_access():
