@@ -1,6 +1,7 @@
 from coroweb import get,options,post
 from getHtml.ziRoom import getZiRoomHtml 
 from getHtml.ziRoom import getZiRoomHtmlSelenium 
+import time
 
 @get('/blog/{id}')
 def get_blog(id):
@@ -11,7 +12,11 @@ def get_rooms(name):
     key='阳光100'
     result = []
     # getZiRoomHtml(key)
+    startTime = time.time()
     result = getZiRoomHtmlSelenium(key)
+    endTime = time.time()
+    durTime = endTime - startTime
+    print(durTime,'durTime')
     return {'data':result}
 @options('/logIn')
 def get_access():
