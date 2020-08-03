@@ -51,9 +51,7 @@ def getEggListData(browser):
         titleNode = titleDiv.find_element_by_tag_name('a')
         title = titleNode.text
         detailUrl = titleNode.get_attribute('href')
-        
         detailContent = i.find_element_by_class_name('r_lbx_cenb').text
-         
         detailConList = detailContent.split('|')
         area = 0
         floor = 0

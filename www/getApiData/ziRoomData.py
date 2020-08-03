@@ -23,12 +23,14 @@ def getZiRoomData(key):
     headers = {x.split(':')[0].strip(): ("".join(x.split(':')[1:])).strip().replace('//', "://") for x in headers}
     r = requests.get(urlNext,headers=headers)
     statusFlag = r.status_code != 200 
+    result = []
     if statusFlag :
         r = requests.get(url,headers=headers)
+
     soup = BeautifulSoup(r.text,'html.parser')
     result = getZiRoomListData(soup)
     return result
-    
+
 def getZiRoomListData(soup):
     items = soup.findAll('div', {'class': 'item'})
     result = []
@@ -43,7 +45,7 @@ def getZiRoomListData(soup):
             imgSrcEnd = imgSrc.replace('//','http://')
             titleNode = i.find('h5',{'class':'title'})
             titleNodeHref = titleNode.find('a')
-            title = titleNodeHref.text
+            title = titleNodeHref.text.strip()
             description = i.find('div',{'class':'desc'})
             descriptions = description.select('div')
             floorData = descriptions[0].text
