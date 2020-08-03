@@ -2,31 +2,11 @@ import requests
 from bs4 import BeautifulSoup
 import urllib.parse
 import re
-import time
-import asyncio
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support import expected_conditions as EC 
-from selenium.webdriver.support.wait import WebDriverWait
-from selenium.webdriver import ChromeOptions
-
-
-from getHtml.eggShell import getEggShellData
-from getHtml.ziRoomSelenium import getZiRoomData
-from getHtml.myHome import getMyHomeData
-from getHtml.mushroom import getMushroomData
-# from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
-# capa = DesiredCapabilities.CHROME
-# capa["pageLoadStrategy"] = "none"
 import json
-def getZiRoomHtml(key):
-    keyword=urllib.parse.quote(key.encode('gb2312'))
-    # url = 'http://www.ziroom.com/z/?qwd={key}' 
-    httpUrl =  'http://www.ziroom.com/z/'
-    url =  httpUrl + '?qwd=' +  keyword
-    urlNext = 'http://www.ziroom.com/z/z0/?qwd=' + keyword 
-    print(urlNext,'urlNext')
+    
+def getZiRoomData(key):
+    url =  'http://www.ziroom.com/z/' + '?qwd=' +  key
+    urlNext = 'http://www.ziroom.com/z/z0/?qwd=' + key
     headers = """
     Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
     Accept-Encoding: gzip, deflate
@@ -40,31 +20,28 @@ def getZiRoomHtml(key):
     User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36
     """
     headers = headers.strip().split('\n')
-    
-    # 使用字典生成式将参数切片重组，并去掉空格，处理带协议头中的://
     headers = {x.split(':')[0].strip(): ("".join(x.split(':')[1:])).strip().replace('//', "://") for x in headers}
-    
-    # 使用json模块将字典转化成json格式打印出来
-    # print(json.dumps(headers,indent=1))
-
     r = requests.get(urlNext,headers=headers)
-    # print(r,'r')
+    statusFlag = r.status_code != 200 
+    if statusFlag :
+        r = requests.get(url,headers=headers)
     soup = BeautifulSoup(r.text,'html.parser')
-    # print(soup,'soup')
+    result = getZiRoomListData(soup)
+    return result
+    
+def getZiRoomListData(soup):
     items = soup.findAll('div', {'class': 'item'})
     result = []
-    print(items,'items')
+    # print(items,'items')
     for i in items:
         divList = i.findAll('span')
         if len(divList) > 5:
             detail = i.find('a',{'class':'pic-wrap'})
-            print(detail.href,'detail')
             detailUrl = detail['href'].replace('//','http://')
             img = i.find('img', {'class': 'lazy'})
             imgSrc = img['src']
             imgSrcEnd = imgSrc.replace('//','http://')
             titleNode = i.find('h5',{'class':'title'})
-            print(titleNode.text,'titleNode')
             titleNodeHref = titleNode.find('a')
             title = titleNodeHref.text
             description = i.find('div',{'class':'desc'})
@@ -103,44 +80,4 @@ def getZiRoomHtml(key):
                 
                 }
             result.append(res)
-    return result
-
-def getZiRoomHtmlSelenium(key):
-    browser = webdriver.Chrome()
-    result = []
-    resultEgg = []
-    resultZiRoom = []
-    resultMyHome = []
-    resultMushroom = []
-    try:
-        option = ChromeOptions()
-        option.add_experimental_option('excludeSwitches', ['enable-automation'])
-        option.add_experimental_option('useAutomationExtension', False)
-        browser = webdriver.Chrome(options=option)
-        browser.execute_cdp_cmd('Page.addScriptToEvaluateOnNewDocument', {
-           'source': 'Object.defineProperty(navigator, "webdriver", {get: () => undefined})'
-        })
-
-        # resultEgg =  getEggShellData(browser, key, True)
-        # resultZiRoom =  getZiRoomData(browser, key, True)
-        # resultMyHome =  getMyHomeData(browser, key, True)
-        # resultMyHome =  getMyHomeData(browser, key, True)
-        resultMushroom =  getMushroomData(browser, key, True)
-        
-
-        # browser.get('http://www.ziroom.com')
-        # input = browser.find_element_by_id('Z_search_input')
-        # input.send_keys(key)
-        # input.send_keys(Keys.ENTER)
-        # wait = WebDriverWait(browser, 10)
-        # wait.until(EC.presence_of_element_located((By.CLASS_NAME, 'Z_list'))) 
-    finally:
-        browser.close()
-    
-    result.extend(resultEgg)
-    result.extend(resultZiRoom)
-    result.extend(resultMyHome)
-    result.extend(resultMushroom)
-
-
     return result

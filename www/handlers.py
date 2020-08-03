@@ -1,5 +1,5 @@
 from coroweb import get,options,post
-from getHtml.ziRoom import getZiRoomHtml 
+from getApiData.ziRoomApi import getZiRoomApiData 
 from getHtml.ziRoom import getZiRoomHtmlSelenium 
 import time
 
@@ -13,8 +13,8 @@ def get_rooms(*args,**kw):
     print(kw,'kw')
     key = kw['key']
     result = []
-    # getZiRoomHtml(key)
-    result = getZiRoomHtmlSelenium(key)
+    result = getZiRoomApiData(key)
+    # result = getZiRoomHtmlSelenium(key)
     return {'data':result}
 @options('/logIn')
 def get_access():
