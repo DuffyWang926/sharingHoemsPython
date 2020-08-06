@@ -1,16 +1,16 @@
 from getApiData.ziRoomData import getZiRoomData
 from getApiData.eggShellData import getEggShellData
+import asyncio
 
-
-def getZiRoomApiData(key):
-    # keyword=urllib.parse.quote(key.encode('gb2312'))
-    # url = 'http://www.ziroom.com/z/?qwd={key}' 
+async def getZiRoomApiData(key):
     result = []
-    # resultZiRoom = getZiRoomData(key)
-    resultEggShell = getEggShellData(key)
-
-    # result.append(resultZiRoom)
-    result.append(resultEggShell)
+    resultZiRoom = []
+    resultEggShell = []
+    resultZiRoom = await getZiRoomData(key)
+    resultEggShell = await getEggShellData(key)
+    result.extend(resultZiRoom)
+    result.extend(resultEggShell)
     
     return result
+
 

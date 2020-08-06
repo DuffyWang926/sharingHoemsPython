@@ -3,8 +3,10 @@ from bs4 import BeautifulSoup
 import urllib.parse
 import re
 import json
+import asyncio
+import aiohttp
     
-def getEggShellData(key):
+async def getEggShellData(key):
     url =  'https://www.danke.com/room/bj?search_text=' +  key
     headers = """
     Referer: https://www.danke.com/
@@ -13,14 +15,23 @@ def getEggShellData(key):
     """
     headers = headers.strip().split('\n')
     headers = {x.split(':')[0].strip(): ("".join(x.split(':')[1:])).strip().replace('//', "://") for x in headers}
-    r = requests.get(url,headers=headers)
-    statusFlag = r.status_code == 200 
+    
+    # response = await get(url,headers=headers)
+    # responseText = await response.text()
+    # soup = BeautifulSoup(responseText,'html.parser')
+
+    response = requests.get(url,headers=headers)
     result = []
-    if statusFlag :
-        soup = BeautifulSoup(r.text,'html.parser')
-        print(soup,soup)
-        result = getEggShellListData(soup)
+    soup = BeautifulSoup(response.text,'html.parser')
+   
+    result = getEggShellListData(soup)
     return result
+
+async def get(url,headers):
+    session = aiohttp.ClientSession()
+    r = await session.get(url,headers=headers)
+    await session.close()
+    return r
     
 def getEggShellListData(soup):
     items = soup.findAll('div', {'class': 'r_lbx'})
@@ -65,48 +76,4 @@ def getEggShellListData(soup):
         }
         result.append(res)
 
-        # detail = i.find('a',{'class':'pic-wrap'})
-        # detailUrl = detail['href'].replace('//','http://')
-        # img = i.find('img', {'class': 'lazy'})
-        # imgSrc = img['src']
-        # imgSrcEnd = imgSrc.replace('//','http://')
-        # titleNode = i.find('h5',{'class':'title'})
-        # titleNodeHref = titleNode.find('a')
-        # title = titleNodeHref.text
-        # description = i.find('div',{'class':'desc'})
-        # descriptions = description.select('div')
-        # floorData = descriptions[0].text
-        # floorArr = floorData.split('|')
-        # if len(floorArr) > 0:
-        #     area = floorArr[0]
-        #     floorTotalData = floorArr[1]
-        #     floor = floorTotalData.split('/')[0]
-        #     floorTotal = floorTotalData.split('/')[1].replace('层','').strip()
-
-        # distanceNode = description.select('div',{'class':'location'})
-        # distance = distanceNode[1].string.replace('\n','').replace('\t','').replace(' ','')
-        # priceNodeList = i.select('span[class="num"]')
-        # priceList = []
-        # for k in priceNodeList:
-        #     priceList.append(k['style'].replace('//','http://'))
-        
-        # tagNodeDiv = i.select('div[class="tag"]')
-        # tagNodeSpan = tagNodeDiv[0].select('span')
-        # tagList = []
-        # for k in tagNodeSpan:
-        #     tagList.append(k.text)
-
-        # res = { 
-        #     'imgSrc':imgSrcEnd,
-        #     'title':title,
-        #     'area':area,
-        #     'floor':floor,
-        #     'floorTotal':floorTotal,
-        #     'distance':distance,
-        #     'price':priceList,
-        #     'tagList':tagList,
-        #     'detailUrl':detailUrl
-            
-        #     }
-        # result.append(res)
     return result

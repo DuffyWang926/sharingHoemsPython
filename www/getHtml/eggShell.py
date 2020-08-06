@@ -68,7 +68,7 @@ def getEggListData(browser):
             tagList.append(k.text)
 
         priceDiv = i.find_element_by_class_name('r_lbx_moneya')
-        price = i.find_element_by_class_name('ty_b').text
+        price = priceDiv.find_element_by_class_name('ty_b').text
 
         res = {
             "imgSrc":imgSrc,

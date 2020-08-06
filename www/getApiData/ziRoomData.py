@@ -2,9 +2,10 @@ import requests
 from bs4 import BeautifulSoup
 import urllib.parse
 import re
-import json
+import asyncio
+import aiohttp
     
-def getZiRoomData(key):
+async def getZiRoomData(key):
     url =  'http://www.ziroom.com/z/' + '?qwd=' +  key
     urlNext = 'http://www.ziroom.com/z/z0/?qwd=' + key
     headers = """
@@ -21,16 +22,21 @@ def getZiRoomData(key):
     """
     headers = headers.strip().split('\n')
     headers = {x.split(':')[0].strip(): ("".join(x.split(':')[1:])).strip().replace('//', "://") for x in headers}
-    r = requests.get(urlNext,headers=headers)
-    statusFlag = r.status_code != 200 
+    
+    response = await get(urlNext,headers)
+    responseText = await response.text()
     result = []
-    if statusFlag :
-        r = requests.get(url,headers=headers)
 
-    soup = BeautifulSoup(r.text,'html.parser')
+    soup = BeautifulSoup(responseText,'html.parser')
     result = getZiRoomListData(soup)
     return result
 
+async def get(url,headers):
+    session = aiohttp.ClientSession()
+    r = await session.get(url,headers=headers)
+    await session.close()
+    return r
+    
 def getZiRoomListData(soup):
     items = soup.findAll('div', {'class': 'item'})
     result = []

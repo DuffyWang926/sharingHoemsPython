@@ -2,18 +2,18 @@ from coroweb import get,options,post
 from getApiData.ziRoomApi import getZiRoomApiData 
 from getHtml.ziRoom import getZiRoomHtmlSelenium 
 import time
-
+import asyncio
 @get('/blog/{id}')
 def get_blog(id):
     return id
 
 @get('/roomList')
-def get_rooms(*args,**kw):
+async def get_rooms(*args,**kw):
     print(args,'args')
     print(kw,'kw')
     key = kw['key']
     result = []
-    result = getZiRoomApiData(key)
+    result = await getZiRoomApiData(key)
     # result = getZiRoomHtmlSelenium(key)
     return {'data':result}
 @options('/logIn')
