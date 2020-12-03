@@ -33,6 +33,12 @@ async def getZiRoomData(key):
 
 async def get(url,headers):
     session = aiohttp.ClientSession()
+    # proxy = 'http://175.43.58.62:9999'
+    # proxy = 'http://113.195.22.169:9999'
+    # proxy = 'http://125.108.119.110:9999'
+    
+    
+    # r = await session.get(url,headers=headers, proxy=proxy)
     r = await session.get(url,headers=headers)
     await session.close()
     return r
@@ -40,7 +46,6 @@ async def get(url,headers):
 def getZiRoomListData(soup):
     items = soup.findAll('div', {'class': 'item'})
     result = []
-    # print(items,'items')
     for i in items:
         divList = i.findAll('span')
         if len(divList) > 5:

@@ -72,7 +72,6 @@ def getEggShellListData(soup):
             'distance':distance,
             'tagList':tagList,
             'price':price
-
         }
         result.append(res)
 
